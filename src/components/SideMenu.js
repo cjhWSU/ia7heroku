@@ -12,7 +12,7 @@ class SideMenu extends React.Component {
             <li role="menuitem" tabIndex="-1">
             About
             </li>
-            <li role="menuitem" tabIndex="-1">
+            <li role="menuitem" tabIndex="-1" onClick={this.props.logOut}>
             Log Out
             </li>
         </ul>  

@@ -4,13 +4,25 @@ import RoundsMode  from './RoundsMode.js';
 import RoundsTable from './RoundsTable.js';
 import RoundForm from './RoundForm.js';
 import FloatingButton from './FloatingButton.js'
+import NotificationToast from './NotificationToast.js';
+import PopUpModal from './PopUpModal.js';
 
 class RoundsPage extends React.Component {
     constructor(props) {
             super(props);
             this.state = {mode: RoundsMode.ROUNDSTABLE,
                           deleteId: -1,
-                          editId: -1};        
+                          editId: -1,
+                          renderToast: false,
+                          confirmDialog: false};
+    }
+
+    setMode = (newMode) => {
+        this.setState({mode: newMode});
+    }
+
+    setMode = (newMode) => {
+        this.setState({mode: newMode});
     }
 
     initiateEditRound = (val) => {
@@ -20,8 +32,21 @@ class RoundsPage extends React.Component {
     }
     
     initiateDeleteRound = (val) => {
-        this.setState({deleteId: val},
-        () => alert("Confirm delete goes here!"));
+        this.setState({deleteId: val,
+                       confirmDialog: true})
+    }
+
+    removeToast = () => {
+        this.setState({renderToast: false})
+    }
+
+    cancelDelete = () => {
+        this.setState({confirmDialog: false})
+    }
+
+    confirmDelete = (val) => {
+        this.props.deleteRound(val)
+        this.setState({renderToast: true})
     }
 
     render() {
@@ -29,6 +54,16 @@ class RoundsPage extends React.Component {
         case RoundsMode.ROUNDSTABLE: 
             return (
                 <>
+                    <div className="space">
+                    {this.state.confirmDialog ? <PopUpModal cancelDelete = {this.cancelDelete} 
+                                                            confirmDelete = {this.confirmDelete}
+                                                            text = {'Deleting round: ' + this.state.deleteId.toString()}
+                                                            deleteId = {this.state.deleteId}/> 
+                                              : null}
+                    {this.state.renderToast ? <NotificationToast removeToast = {this.removeToast}
+                                                                 message = {"Round " + this.state.deleteId.toString() + " deleted!"}/> 
+                                            : null}
+                    </div>
                     <RoundsTable rounds={this.props.rounds}
                                 initiateDeleteRound={this.initiateDeleteRound}
                                 deleteRound={this.props.deleteRound} 
@@ -63,6 +98,7 @@ class RoundsPage extends React.Component {
             }
             return (
             <RoundForm mode={this.state.mode}
+                editId = {this.state.editId}
                 roundData={this.props.rounds[i]}
                 saveRound={this.props.updateRound}
                 setMode={this.setMode}

@@ -403,3 +403,9 @@ button::-moz-focus-inner {
 .cell-align-middle {
   vertical-align: middle;
 }
+
+.space {
+  background-color: lightgray;
+  position: relative;
+  top: 100px;
+}
